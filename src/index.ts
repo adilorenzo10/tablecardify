@@ -189,6 +189,88 @@ class TableCardifyTable {
     };
   }
 
+  private setupCollapsibleCard(card: HTMLDetailsElement, summary: HTMLElement, content: HTMLElement): void {
+    let isAnimating = false;
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      return;
+    }
+
+    const cleanupOpenState = () => {
+      content.style.height = "auto";
+      content.style.opacity = "1";
+      card.classList.remove("tablecardify--animating");
+      isAnimating = false;
+    };
+
+    const cleanupClosedState = () => {
+      card.open = false;
+      content.style.height = "0px";
+      content.style.opacity = "0";
+      card.classList.remove("tablecardify--animating");
+      isAnimating = false;
+    };
+
+    if (!card.open) {
+      content.style.height = "0px";
+      content.style.opacity = "0";
+    }
+
+    summary.addEventListener("click", (event) => {
+      event.preventDefault();
+
+      if (isAnimating) {
+        return;
+      }
+
+      isAnimating = true;
+      card.classList.add("tablecardify--animating");
+
+      if (card.open) {
+        const startHeight = `${content.scrollHeight}px`;
+        content.style.height = startHeight;
+        content.style.opacity = "1";
+
+        requestAnimationFrame(() => {
+          content.style.height = "0px";
+          content.style.opacity = "0";
+        });
+
+        const onCloseEnd = (transitionEvent: TransitionEvent) => {
+          if (transitionEvent.propertyName !== "height") {
+            return;
+          }
+          content.removeEventListener("transitionend", onCloseEnd);
+          cleanupClosedState();
+        };
+
+        content.addEventListener("transitionend", onCloseEnd);
+        return;
+      }
+
+      card.open = true;
+      content.style.height = "0px";
+      content.style.opacity = "0";
+
+      requestAnimationFrame(() => {
+        const targetHeight = `${content.scrollHeight}px`;
+        content.style.height = targetHeight;
+        content.style.opacity = "1";
+      });
+
+      const onOpenEnd = (transitionEvent: TransitionEvent) => {
+        if (transitionEvent.propertyName !== "height") {
+          return;
+        }
+        content.removeEventListener("transitionend", onOpenEnd);
+        cleanupOpenState();
+      };
+
+      content.addEventListener("transitionend", onOpenEnd);
+    });
+  }
+
   private buildCard(row: HTMLTableRowElement, columns: ColumnMeta[]): HTMLElement | null {
     const card = this.options.collapsible
       ? document.createElement("details")
@@ -296,6 +378,10 @@ class TableCardifyTable {
       toggleInner.append(title, chevron);
       toggle.appendChild(toggleInner);
       card.append(toggle, content);
+
+      if (card instanceof HTMLDetailsElement) {
+        this.setupCollapsibleCard(card, toggle, content);
+      }
     } else {
       const header = document.createElement("header");
       header.className = ["tablecardify__header", this.options.summaryClassName].filter(Boolean).join(" ");
