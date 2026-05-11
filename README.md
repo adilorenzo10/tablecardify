@@ -46,6 +46,16 @@ import "tablecardify/styles.css";
 new TableCardify(".table", {
   breakpoint: 992,
   theme: "bootstrap",
+  collapsible: true,
+  defaultExpanded: false,
+  detailsClassName: "shadow border-0",
+  summaryClassName: "px-3 py-2",
+  bodyClassName: "px-3 pb-3",
+  detailsBackgroundColor: "#ffffff",
+  summaryBackgroundColor: "#f8f9fa",
+  bodyBackgroundColor: "#ffffff",
+  textColor: "#212529",
+  borderRadius: "1rem",
 });
 ```
 
@@ -89,14 +99,31 @@ type TableCardifyOptions = {
   breakpoint?: number | string;
   theme?: "default" | "bootstrap";
   cardClassName?: string;
+  detailsClassName?: string;
+  summaryClassName?: string;
+  bodyClassName?: string;
   emptyCellText?: string;
+  collapsible?: boolean;
+  defaultExpanded?: boolean;
+  detailsBackgroundColor?: string;
+  summaryBackgroundColor?: string;
+  bodyBackgroundColor?: string;
+  textColor?: string;
+  labelColor?: string;
+  borderColor?: string;
+  borderRadius?: string;
 };
 ```
+
+`collapsible` enables expandable mobile cards with an animated chevron. `defaultExpanded` controls the initial open state.
+
+`detailsClassName`, `summaryClassName`, and `bodyClassName` let you attach custom classes directly to the generated mobile card structure.
+
+Color and shape options are applied through CSS variables, so you can customize the generated cards directly from JavaScript without editing the package stylesheet.
 
 ## MVP roadmap
 
 - Public demo with before/after examples.
-- Optional mutation observation for dynamic tables.
 - Better support for complex cells with form controls.
 - Dedicated Bootstrap 5 theme package.
 - Automated tests for header parsing and responsive rebuild behavior.

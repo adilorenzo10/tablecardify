@@ -4,14 +4,38 @@ export type TableCardifyOptions = {
   breakpoint?: number | string;
   theme?: TableCardifyTheme;
   cardClassName?: string;
+  detailsClassName?: string;
+  summaryClassName?: string;
+  bodyClassName?: string;
   emptyCellText?: string;
+  collapsible?: boolean;
+  defaultExpanded?: boolean;
+  detailsBackgroundColor?: string;
+  summaryBackgroundColor?: string;
+  bodyBackgroundColor?: string;
+  textColor?: string;
+  labelColor?: string;
+  borderColor?: string;
+  borderRadius?: string;
 };
 
 type NormalizedOptions = {
   breakpoint: string;
   theme: TableCardifyTheme;
   cardClassName: string;
+  detailsClassName: string;
+  summaryClassName: string;
+  bodyClassName: string;
   emptyCellText: string;
+  collapsible: boolean;
+  defaultExpanded: boolean;
+  detailsBackgroundColor?: string;
+  summaryBackgroundColor?: string;
+  bodyBackgroundColor?: string;
+  textColor?: string;
+  labelColor?: string;
+  borderColor?: string;
+  borderRadius?: string;
 };
 
 type ColumnMeta = {
@@ -26,7 +50,12 @@ const DEFAULT_OPTIONS: NormalizedOptions = {
   breakpoint: "(max-width: 991.98px)",
   theme: "default",
   cardClassName: "",
+  detailsClassName: "",
+  summaryClassName: "",
+  bodyClassName: "",
   emptyCellText: "—",
+  collapsible: false,
+  defaultExpanded: true,
 };
 
 function normalizeBreakpoint(value?: number | string): string {
@@ -50,6 +79,24 @@ function cloneChildrenInto(source: HTMLElement, target: HTMLElement): boolean {
 
   nodes.forEach((node) => target.appendChild(node.cloneNode(true)));
   return true;
+}
+
+function applyCardVariables(element: HTMLElement, options: NormalizedOptions): void {
+  const variables: Array<[string, string | undefined]> = [
+    ["--tc-details-bg", options.detailsBackgroundColor],
+    ["--tc-summary-bg", options.summaryBackgroundColor],
+    ["--tc-body-bg", options.bodyBackgroundColor],
+    ["--tc-text-color", options.textColor],
+    ["--tc-label-color", options.labelColor],
+    ["--tc-border-color", options.borderColor],
+    ["--tc-radius", options.borderRadius],
+  ];
+
+  variables.forEach(([name, value]) => {
+    if (value) {
+      element.style.setProperty(name, value);
+    }
+  });
 }
 
 class TableCardifyTable {
@@ -143,11 +190,22 @@ class TableCardifyTable {
   }
 
   private buildCard(row: HTMLTableRowElement, columns: ColumnMeta[]): HTMLElement | null {
-    const card = document.createElement("article");
-    card.className = "tablecardify__card";
+    const card = this.options.collapsible
+      ? document.createElement("details")
+      : document.createElement("article");
+    card.className = ["tablecardify__card", this.options.cardClassName].filter(Boolean).join(" ");
+    applyCardVariables(card, this.options);
+
+    if (this.options.collapsible && card instanceof HTMLDetailsElement) {
+      card.classList.add("tablecardify__card--collapsible");
+      if (this.options.detailsClassName) {
+        card.classList.add(...this.options.detailsClassName.split(" ").filter(Boolean));
+      }
+      card.open = this.options.defaultExpanded;
+    }
 
     const body = document.createElement("div");
-    body.className = "tablecardify__body";
+    body.className = ["tablecardify__body", this.options.bodyClassName].filter(Boolean).join(" ");
 
     const footer = document.createElement("div");
     footer.className = "tablecardify__footer";
@@ -202,22 +260,42 @@ class TableCardifyTable {
       titleText = fallbackCell?.textContent?.trim() || "Riga tabella";
     }
 
-    const header = document.createElement("header");
-    header.className = "tablecardify__header";
-
     const title = document.createElement("h3");
     title.className = "tablecardify__title";
     title.textContent = titleText;
 
-    header.appendChild(title);
-    card.appendChild(header);
+    const content = document.createElement("div");
+    content.className = "tablecardify__content";
 
     if (hasVisibleContent) {
-      card.appendChild(body);
+      content.appendChild(body);
     }
 
     if (hasFooterContent) {
-      card.appendChild(footer);
+      content.appendChild(footer);
+    }
+
+    if (this.options.collapsible) {
+      const toggle = document.createElement("summary");
+      toggle.className = ["tablecardify__toggle", "tablecardify__header", this.options.summaryClassName]
+        .filter(Boolean)
+        .join(" ");
+
+      const toggleInner = document.createElement("div");
+      toggleInner.className = "tablecardify__toggle-inner";
+
+      const chevron = document.createElement("span");
+      chevron.className = "tablecardify__chevron";
+      chevron.setAttribute("aria-hidden", "true");
+
+      toggleInner.append(title, chevron);
+      toggle.appendChild(toggleInner);
+      card.append(toggle, content);
+    } else {
+      const header = document.createElement("header");
+      header.className = ["tablecardify__header", this.options.summaryClassName].filter(Boolean).join(" ");
+      header.appendChild(title);
+      card.append(header, content);
     }
 
     return card;
@@ -235,7 +313,19 @@ export class TableCardify {
       breakpoint: normalizeBreakpoint(options.breakpoint),
       theme: options.theme ?? DEFAULT_OPTIONS.theme,
       cardClassName: options.cardClassName ?? DEFAULT_OPTIONS.cardClassName,
+      detailsClassName: options.detailsClassName ?? DEFAULT_OPTIONS.detailsClassName,
+      summaryClassName: options.summaryClassName ?? DEFAULT_OPTIONS.summaryClassName,
+      bodyClassName: options.bodyClassName ?? DEFAULT_OPTIONS.bodyClassName,
       emptyCellText: options.emptyCellText ?? DEFAULT_OPTIONS.emptyCellText,
+      collapsible: options.collapsible ?? DEFAULT_OPTIONS.collapsible,
+      defaultExpanded: options.defaultExpanded ?? DEFAULT_OPTIONS.defaultExpanded,
+      detailsBackgroundColor: options.detailsBackgroundColor,
+      summaryBackgroundColor: options.summaryBackgroundColor,
+      bodyBackgroundColor: options.bodyBackgroundColor,
+      textColor: options.textColor,
+      labelColor: options.labelColor,
+      borderColor: options.borderColor,
+      borderRadius: options.borderRadius,
     };
 
     const tables = this.resolveTables(target);

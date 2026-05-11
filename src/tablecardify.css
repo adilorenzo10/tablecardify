@@ -16,10 +16,15 @@
 }
 
 .tablecardify__card {
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  border-radius: 1rem;
-  background: #fff;
+  border: 1px solid var(--tc-border-color, rgba(15, 23, 42, 0.12));
+  border-radius: var(--tc-radius, 1rem);
+  background: var(--tc-details-bg, #fff);
+  color: var(--tc-text-color, inherit);
   box-shadow: 0 0.5rem 1rem rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+}
+
+.tablecardify__card--collapsible {
   overflow: hidden;
 }
 
@@ -30,7 +35,30 @@
 }
 
 .tablecardify__header {
+  background: var(--tc-summary-bg, transparent);
   border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.tablecardify__toggle {
+  display: block;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tablecardify__toggle::-webkit-details-marker {
+  display: none;
+}
+
+.tablecardify__toggle::marker {
+  content: "";
+}
+
+.tablecardify__toggle-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .tablecardify__title {
@@ -40,7 +68,27 @@
   line-height: 1.35;
 }
 
+.tablecardify__chevron {
+  width: 0.8rem;
+  height: 0.8rem;
+  flex-shrink: 0;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+  opacity: 0.72;
+}
+
+.tablecardify__card--collapsible[open] .tablecardify__chevron {
+  transform: rotate(225deg);
+}
+
+.tablecardify__content {
+  display: grid;
+}
+
 .tablecardify__body {
+  background: var(--tc-body-bg, transparent);
   display: grid;
   gap: 0.85rem;
 }
@@ -51,7 +99,7 @@
 }
 
 .tablecardify__label {
-  color: #64748b;
+  color: var(--tc-label-color, #64748b);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -67,25 +115,30 @@
 }
 
 .tablecardify__footer {
+  background: var(--tc-body-bg, transparent);
   border-top: 1px solid rgba(15, 23, 42, 0.08);
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
 
+.tablecardify__content > .tablecardify__footer:first-child {
+  border-top: 0;
+}
+
 .tablecardify--bootstrap .tablecardify__card {
-  border-radius: var(--bs-border-radius-xl, 1rem);
-  border-color: var(--bs-border-color-translucent, rgba(15, 23, 42, 0.12));
-  background: var(--bs-body-bg, #fff);
-  color: var(--bs-body-color, #212529);
+  border-radius: var(--tc-radius, var(--bs-border-radius-xl, 1rem));
+  border-color: var(--tc-border-color, var(--bs-border-color-translucent, rgba(15, 23, 42, 0.12)));
+  background: var(--tc-details-bg, var(--bs-body-bg, #fff));
+  color: var(--tc-text-color, var(--bs-body-color, #212529));
   box-shadow: var(--bs-box-shadow-sm, 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075));
 }
 
 .tablecardify--bootstrap .tablecardify__label {
-  color: var(--bs-secondary-color, #6c757d);
+  color: var(--tc-label-color, var(--bs-secondary-color, #6c757d));
 }
 
 .tablecardify--bootstrap .tablecardify__header,
 .tablecardify--bootstrap .tablecardify__footer {
-  border-color: var(--bs-border-color-translucent, rgba(15, 23, 42, 0.12));
+  border-color: var(--tc-border-color, var(--bs-border-color-translucent, rgba(15, 23, 42, 0.12)));
 }
