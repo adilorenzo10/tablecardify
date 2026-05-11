@@ -1,0 +1,91 @@
+.tablecardify {
+  display: grid;
+  gap: 1rem;
+}
+
+.tablecardify[hidden] {
+  display: none !important;
+}
+
+.tablecardify__source {
+  width: 100%;
+}
+
+.tablecardify__source--hidden {
+  display: none !important;
+}
+
+.tablecardify__card {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 0.5rem 1rem rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+}
+
+.tablecardify__header,
+.tablecardify__body,
+.tablecardify__footer {
+  padding: 1rem;
+}
+
+.tablecardify__header {
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.tablecardify__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.tablecardify__body {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.tablecardify__row {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.tablecardify__label {
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.tablecardify__value {
+  min-width: 0;
+}
+
+.tablecardify__value > *:last-child {
+  margin-bottom: 0;
+}
+
+.tablecardify__footer {
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tablecardify--bootstrap .tablecardify__card {
+  border-radius: var(--bs-border-radius-xl, 1rem);
+  border-color: var(--bs-border-color-translucent, rgba(15, 23, 42, 0.12));
+  background: var(--bs-body-bg, #fff);
+  color: var(--bs-body-color, #212529);
+  box-shadow: var(--bs-box-shadow-sm, 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075));
+}
+
+.tablecardify--bootstrap .tablecardify__label {
+  color: var(--bs-secondary-color, #6c757d);
+}
+
+.tablecardify--bootstrap .tablecardify__header,
+.tablecardify--bootstrap .tablecardify__footer {
+  border-color: var(--bs-border-color-translucent, rgba(15, 23, 42, 0.12));
+}
