@@ -267,13 +267,18 @@ class TableCardifyTable {
     const content = document.createElement("div");
     content.className = "tablecardify__content";
 
+    const contentInner = document.createElement("div");
+    contentInner.className = "tablecardify__content-inner";
+
     if (hasVisibleContent) {
-      content.appendChild(body);
+      contentInner.appendChild(body);
     }
 
     if (hasFooterContent) {
-      content.appendChild(footer);
+      contentInner.appendChild(footer);
     }
+
+    content.appendChild(contentInner);
 
     if (this.options.collapsible) {
       const toggle = document.createElement("summary");

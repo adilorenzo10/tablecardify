@@ -89,6 +89,25 @@
   display: grid;
 }
 
+.tablecardify__content-inner {
+  min-height: 0;
+}
+
+.tablecardify__card--collapsible .tablecardify__content {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.24s ease, opacity 0.2s ease;
+}
+
+.tablecardify__card--collapsible .tablecardify__content-inner {
+  overflow: hidden;
+}
+
+.tablecardify__card--collapsible[open] .tablecardify__content {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
 .tablecardify__body {
   background: var(--tc-body-bg, transparent);
   display: grid;
