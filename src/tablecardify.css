@@ -69,18 +69,20 @@
 }
 
 .tablecardify__chevron {
-  width: 0.8rem;
-  height: 0.8rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  display: inline-block;
   flex-shrink: 0;
   border-right: 2px solid currentColor;
   border-bottom: 2px solid currentColor;
-  transform: rotate(45deg);
+  transform: translateY(-0.08rem) rotate(45deg);
+  transform-origin: center;
   transition: transform 0.2s ease;
   opacity: 0.72;
 }
 
 .tablecardify__card--collapsible[open] .tablecardify__chevron {
-  transform: rotate(225deg);
+  transform: translateY(0.08rem) rotate(225deg);
 }
 
 .tablecardify__content {
@@ -110,7 +112,7 @@
   min-width: 0;
 }
 
-.tablecardify__value > *:last-child {
+.tablecardify__value>*:last-child {
   margin-bottom: 0;
 }
 
@@ -122,7 +124,7 @@
   gap: 0.5rem;
 }
 
-.tablecardify__content > .tablecardify__footer:first-child {
+.tablecardify__content>.tablecardify__footer:first-child {
   border-top: 0;
 }
 
