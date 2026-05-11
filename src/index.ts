@@ -189,32 +189,32 @@ class TableCardifyTable {
     };
   }
 
-  private setupCollapsibleCard(card: HTMLDetailsElement, summary: HTMLElement, content: HTMLElement): void {
+  private setupCollapsibleCard(
+    card: HTMLDetailsElement,
+    summary: HTMLElement,
+    content: HTMLElement,
+  ): void {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let isAnimating = false;
 
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) {
-      return;
-    }
+    const setCollapsedState = () => {
+      content.style.height = "0px";
+      content.style.opacity = "0";
+    };
 
-    const cleanupOpenState = () => {
+    const setExpandedState = () => {
       content.style.height = "auto";
       content.style.opacity = "1";
-      card.classList.remove("tablecardify--animating");
-      isAnimating = false;
     };
 
-    const cleanupClosedState = () => {
-      card.open = false;
-      content.style.height = "0px";
-      content.style.opacity = "0";
-      card.classList.remove("tablecardify--animating");
-      isAnimating = false;
-    };
+    if (card.open) {
+      setExpandedState();
+    } else {
+      setCollapsedState();
+    }
 
-    if (!card.open) {
-      content.style.height = "0px";
-      content.style.opacity = "0";
+    if (prefersReducedMotion) {
+      return;
     }
 
     summary.addEventListener("click", (event) => {
@@ -225,49 +225,49 @@ class TableCardifyTable {
       }
 
       isAnimating = true;
-      card.classList.add("tablecardify--animating");
+      const isOpening = !card.open;
 
-      if (card.open) {
-        const startHeight = `${content.scrollHeight}px`;
-        content.style.height = startHeight;
-        content.style.opacity = "1";
+      if (isOpening) {
+        card.open = true;
+        setCollapsedState();
 
         requestAnimationFrame(() => {
-          content.style.height = "0px";
-          content.style.opacity = "0";
+          content.style.height = `${content.scrollHeight}px`;
+          content.style.opacity = "1";
         });
 
-        const onCloseEnd = (transitionEvent: TransitionEvent) => {
+        const handleOpenEnd = (transitionEvent: TransitionEvent) => {
           if (transitionEvent.propertyName !== "height") {
             return;
           }
-          content.removeEventListener("transitionend", onCloseEnd);
-          cleanupClosedState();
+
+          content.removeEventListener("transitionend", handleOpenEnd);
+          setExpandedState();
+          isAnimating = false;
         };
 
-        content.addEventListener("transitionend", onCloseEnd);
+        content.addEventListener("transitionend", handleOpenEnd);
         return;
       }
 
-      card.open = true;
-      content.style.height = "0px";
-      content.style.opacity = "0";
+      content.style.height = `${content.scrollHeight}px`;
+      content.style.opacity = "1";
 
       requestAnimationFrame(() => {
-        const targetHeight = `${content.scrollHeight}px`;
-        content.style.height = targetHeight;
-        content.style.opacity = "1";
+        setCollapsedState();
       });
 
-      const onOpenEnd = (transitionEvent: TransitionEvent) => {
+      const handleCloseEnd = (transitionEvent: TransitionEvent) => {
         if (transitionEvent.propertyName !== "height") {
           return;
         }
-        content.removeEventListener("transitionend", onOpenEnd);
-        cleanupOpenState();
+
+        content.removeEventListener("transitionend", handleCloseEnd);
+        card.open = false;
+        isAnimating = false;
       };
 
-      content.addEventListener("transitionend", onOpenEnd);
+      content.addEventListener("transitionend", handleCloseEnd);
     });
   }
 

@@ -28,6 +28,10 @@
   overflow: hidden;
 }
 
+.tablecardify__card--collapsible>.tablecardify__content {
+  display: block !important;
+}
+
 .tablecardify__header,
 .tablecardify__body,
 .tablecardify__footer {
@@ -86,19 +90,22 @@
 }
 
 .tablecardify__content {
-  display: grid;
+  display: block;
   height: auto;
-  opacity: 1;
+  opacity: 0;
   overflow: hidden;
-  transition: height 0.24s ease, opacity 0.2s ease;
+  visibility: hidden;
+  pointer-events: none;
+  transition: height 0.28s ease, opacity 0.2s ease;
 }
 
 .tablecardify__content-inner {
   min-height: 0;
 }
 
-.tablecardify__card--collapsible .tablecardify__content-inner {
-  overflow: hidden;
+.tablecardify__card--collapsible[open] .tablecardify__content {
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .tablecardify__body {
