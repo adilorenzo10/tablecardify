@@ -3,6 +3,7 @@ export type TableCardifyTheme = "default" | "bootstrap";
 export type TableCardifyOptions = {
   breakpoint?: number | string;
   theme?: TableCardifyTheme;
+  containerClassName?: string;
   cardClassName?: string;
   detailsClassName?: string;
   summaryClassName?: string;
@@ -22,6 +23,7 @@ export type TableCardifyOptions = {
 type NormalizedOptions = {
   breakpoint: string;
   theme: TableCardifyTheme;
+  containerClassName: string;
   cardClassName: string;
   detailsClassName: string;
   summaryClassName: string;
@@ -49,6 +51,7 @@ type ColumnMeta = {
 const DEFAULT_OPTIONS: NormalizedOptions = {
   breakpoint: "(max-width: 991.98px)",
   theme: "default",
+  containerClassName: "",
   cardClassName: "",
   detailsClassName: "",
   summaryClassName: "",
@@ -114,7 +117,7 @@ class TableCardifyTable {
     this.container.className = [
       "tablecardify",
       options.theme === "bootstrap" ? "tablecardify--bootstrap" : "",
-      options.cardClassName,
+      options.containerClassName,
     ]
       .filter(Boolean)
       .join(" ");
@@ -403,6 +406,7 @@ export class TableCardify {
     const normalizedOptions: NormalizedOptions = {
       breakpoint: normalizeBreakpoint(options.breakpoint),
       theme: options.theme ?? DEFAULT_OPTIONS.theme,
+      containerClassName: options.containerClassName ?? DEFAULT_OPTIONS.containerClassName,
       cardClassName: options.cardClassName ?? DEFAULT_OPTIONS.cardClassName,
       detailsClassName: options.detailsClassName ?? DEFAULT_OPTIONS.detailsClassName,
       summaryClassName: options.summaryClassName ?? DEFAULT_OPTIONS.summaryClassName,
